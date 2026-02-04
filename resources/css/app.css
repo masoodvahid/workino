@@ -1,4 +1,4 @@
-@import url('/fonts/shabnam/shabnam.css');
+@import url('../../public/fonts/shabnam/shabnam.css');
 @import 'tailwindcss';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
