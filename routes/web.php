@@ -18,8 +18,10 @@ Route::get('/coworks', [CoworkController::class, 'index'])->name('coworks.index'
 Route::get('/about', [PageController::class, 'about'])->name('about');
 Route::get('/contact', [PageController::class, 'contact'])->name('contact');
 
-// User Profile (Mocked as accessible for UI phase)
-Route::get('/profile', [UserController::class, 'index'])->name('profile.index');
+Route::middleware('auth')->group(function (): void {
+    Route::get('/profile', [UserController::class, 'index'])->name('profile.index');
+    Route::put('/profile', [UserController::class, 'update'])->name('profile.update');
+});
 
 // Auth UI
 Route::get('/login-register', [AuthController::class, 'login'])->name('auth.login');

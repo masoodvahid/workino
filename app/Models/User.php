@@ -15,6 +15,18 @@ class User extends Authenticatable
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, SoftDeletes;
 
+    public const META_KEYS = [
+        'national_id',
+        'reg_number',
+        'birth_day',
+        'education',
+        'major',
+        'university',
+        'city',
+        'address',
+        'postal_code',
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -55,5 +67,24 @@ class User extends Authenticatable
     public function userMetas(): HasMany
     {
         return $this->hasMany(UserMeta::class, 'uid');
+    }
+
+    public function metaValue(string $key): ?string
+    {
+        return $this->userMetas->firstWhere('key', $key)?->value;
+    }
+
+    public function setMetaValues(array $values): void
+    {
+        foreach ($values as $key => $value) {
+            if (! in_array($key, self::META_KEYS, true)) {
+                continue;
+            }
+
+            $this->userMetas()->updateOrCreate(
+                ['key' => $key],
+                ['value' => filled($value) ? (string) $value : null],
+            );
+        }
     }
 }

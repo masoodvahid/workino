@@ -8,10 +8,14 @@
                     <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                         <div class="p-6 text-center border-b border-gray-100">
                             <div class="w-20 h-20 mx-auto bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-2xl font-bold mb-3">
-                                M
+                                {{ $profile['initial'] }}
                             </div>
-                            <h2 class="font-bold text-gray-900">مسعود وحید</h2>
-                            <p class="text-sm text-gray-500">۰۹۱۲۳۴۵۶۷۸۹</p>
+                            <h2 class="font-bold text-gray-900">{{ $profile['name'] }}</h2>
+                            <p class="text-sm text-gray-500">{{ $profile['mobile'] }}</p>
+                            <div class="mt-3 flex items-center justify-center gap-2 text-xs">
+                                <span class="rounded-full bg-gray-100 px-3 py-1 text-gray-600">{{ $profile['type'] }}</span>
+                                <span class="rounded-full bg-amber-100 px-3 py-1 text-amber-700">{{ $profile['status'] }}</span>
+                            </div>
                         </div>
                         <nav class="flex flex-col p-2">
                             <button @click="tab = 'info'" :class="{ 'bg-blue-50 text-blue-600': tab === 'info', 'text-gray-600 hover:bg-gray-50': tab !== 'info' }" class="flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition text-right">
@@ -59,35 +63,138 @@
                     
                     <!-- Tab: Info -->
                     <div x-show="tab === 'info'" x-transition>
-                        <h3 class="text-xl font-bold text-gray-800 mb-6 border-b border-gray-100 pb-4">اطلاعات کاربر</h3>
-                        <form class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">نام</label>
-                                <input type="text" value="مسعود" class="w-full rounded-lg border-gray-300 bg-gray-50">
+                        <div class="flex flex-col gap-8">
+                            <div class="border-b border-gray-100 pb-6">
+                                <h3 class="text-xl font-bold text-gray-800">ویرایش اطلاعات کاربر</h3>
+                                <p class="text-sm text-gray-500 mt-2">اطلاعات خود را بروزرسانی کنید.</p>
                             </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">نام خانوادگی</label>
-                                <input type="text" value="وحید" class="w-full rounded-lg border-gray-300 bg-gray-50">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">کد ملی</label>
-                                <input type="text" value="0012345678" class="w-full rounded-lg border-gray-300 bg-gray-50">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">شماره موبایل</label>
-                                <input type="text" value="09123456789" class="w-full rounded-lg border-gray-300 bg-gray-50" readonly>
-                            </div>
-                            <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700 mb-2">تصویر پروفایل</label>
-                                <div class="flex items-center gap-4">
-                                    <div class="w-16 h-16 rounded-full bg-gray-200"></div>
-                                    <button type="button" class="text-blue-600 text-sm font-medium hover:underline">تغییر تصویر</button>
+
+                            @if (session('status'))
+                                <div class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+                                    {{ session('status') }}
                                 </div>
-                            </div>
-                            <div class="md:col-span-2 mt-4">
-                                <button type="button" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">ذخیره تغییرات</button>
-                            </div>
-                        </form>
+                            @endif
+
+                            @if ($errors->any())
+                                <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                                    <ul class="list-disc pr-5 space-y-1">
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+
+                            <form action="{{ route('profile.update') }}" method="post" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                @csrf
+                                @method('put')
+
+                                <div class="rounded-xl border border-gray-100 p-5">
+                                    <h4 class="font-semibold text-gray-800 mb-4">اطلاعات پایه</h4>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                                        <div>
+                                            <label class="text-gray-500 block mb-2">نام</label>
+                                            <input name="name" value="{{ old('name', $form['name']) }}" class="w-full rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                                        </div>
+                                        <div>
+                                            <label class="text-gray-500 block mb-2">ماهیت</label>
+                                            <input value="{{ $profile['type'] }}" readonly class="w-full rounded-lg border-gray-200 bg-gray-50 text-gray-600">
+                                        </div>
+                                        <div>
+                                            <label class="text-gray-500 block mb-2">وضعیت</label>
+                                            <input value="{{ $profile['status'] }}" readonly class="w-full rounded-lg border-gray-200 bg-gray-50 text-gray-600">
+                                        </div>
+                                        <div>
+                                            <label class="text-gray-500 block mb-2">ایمیل</label>
+                                            <input type="email" name="email" value="{{ old('email', $form['email']) }}" class="w-full rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="rounded-xl border border-gray-100 p-5">
+                                    <h4 class="font-semibold text-gray-800 mb-4">اطلاعات تماس</h4>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                                        <div>
+                                            <label class="text-gray-500 block mb-2">شماره همراه</label>
+                                            <input value="{{ $form['mobile'] }}" readonly class="w-full rounded-lg border-gray-200 bg-gray-50 text-gray-600">
+                                        </div>
+                                        <div>
+                                            <label class="text-gray-500 block mb-2">شهر</label>
+                                            <select name="city" class="w-full rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                                                <option value="">انتخاب شهر</option>
+                                                @foreach ($cityOptions as $option)
+                                                    <option value="{{ $option->value }}" @selected(old('city', $form['city']) === $option->value)>{{ $option->getLabel() }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="text-gray-500 block mb-2">کد پستی</label>
+                                            <input name="postal_code" value="{{ old('postal_code', $form['postal_code']) }}" class="w-full rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                                        </div>
+                                        <div class="sm:col-span-2">
+                                            <label class="text-gray-500 block mb-2">آدرس</label>
+                                            <textarea name="address" rows="3" class="w-full rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500">{{ old('address', $form['address']) }}</textarea>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="rounded-xl border border-gray-100 p-5">
+                                    <h4 class="font-semibold text-gray-800 mb-4">اطلاعات هویتی</h4>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                                        <div>
+                                            <label class="text-gray-500 block mb-2">{{ $profile['national_id_label'] }}</label>
+                                            <input name="national_id" value="{{ old('national_id', $form['national_id']) }}" class="w-full rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                                        </div>
+                                        @if ($user?->type === 'company')
+                                            <div>
+                                                <label class="text-gray-500 block mb-2">شماره ثبت</label>
+                                                <input name="reg_number" value="{{ old('reg_number', $form['reg_number']) }}" class="w-full rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                                            </div>
+                                        @endif
+                                        @if (in_array($user?->type, ['man', 'woman'], true))
+                                            <div>
+                                                <label class="text-gray-500 block mb-2">تاریخ تولد</label>
+                                                <input name="birth_day" value="{{ old('birth_day', $form['birth_day']) }}" placeholder="1402/01/01" class="w-full rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                                            </div>
+                                        @endif
+                                    </div>
+                                </div>
+
+                                @if (in_array($user?->type, ['man', 'woman'], true))
+                                    <div class="rounded-xl border border-gray-100 p-5">
+                                        <h4 class="font-semibold text-gray-800 mb-4">اطلاعات تحصیلی</h4>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+                                            <div>
+                                                <label class="text-gray-500 block mb-2">مقطع تحصیلی</label>
+                                                <select name="education" class="w-full rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                                                    <option value="">انتخاب مقطع</option>
+                                                    @foreach ($educationOptions as $option)
+                                                        <option value="{{ $option->value }}" @selected(old('education', $form['education']) === $option->value)>{{ $option->getLabel() }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="text-gray-500 block mb-2">رشته تحصیلی</label>
+                                                <input name="major" value="{{ old('major', $form['major']) }}" class="w-full rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                                            </div>
+                                            <div class="sm:col-span-2">
+                                                <label class="text-gray-500 block mb-2">آخرین محل تحصیل</label>
+                                                <input name="university" value="{{ old('university', $form['university']) }}" class="w-full rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500">
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+
+                                <div class="rounded-xl border border-gray-100 p-5 lg:col-span-2">
+                                    <h4 class="font-semibold text-gray-800 mb-4">یادداشت</h4>
+                                    <textarea name="note" rows="4" class="w-full rounded-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500">{{ old('note', $form['note']) }}</textarea>
+                                </div>
+
+                                <div class="lg:col-span-2 flex justify-end">
+                                    <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">ذخیره تغییرات</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
 
                     <!-- Tab: KYC -->
