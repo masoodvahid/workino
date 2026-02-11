@@ -12,11 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('settings', function (Blueprint $table) {
-            $table->id();
+            $table->id();            
             $table->string('key', 128);
-            $table->json('value');
-            $table->string('group', 128)->nullable();
-            $table->boolean('status')->default(true);
+            $table->json('value'); 
+            $table->string('group', 128)->nullable();  // ex: user_profile, sms, ...
             $table->softDeletes();
             $table->timestamps();
 

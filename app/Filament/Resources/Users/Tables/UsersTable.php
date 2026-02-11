@@ -18,8 +18,11 @@ class UsersTable
     {
         return $table
             ->columns([
+                TextColumn::make('name')
+                    ->label('نام')
+                    ->searchable(),
                 TextColumn::make('mobile')
-                    ->label('شماره تماس')
+                    ->label('شماره همراه')
                     ->searchable(),
                 TextColumn::make('status')
                     ->label('وضعیت')

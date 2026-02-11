@@ -5,12 +5,12 @@ namespace App\Http\Controllers;
 use App\Enums\UserStatus;
 use App\Http\Requests\SendOtpRequest;
 use App\Http\Requests\VerifyOtpRequest;
-use App\Models\User;
 use App\Services\KavenegarSmsService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -31,7 +31,6 @@ class AuthController extends Controller
             ['mobile' => $mobile],
             [
                 'username' => $mobile,
-                'email' => "{$mobile}@workino.local",
                 'password' => Hash::make(Str::random(32)),
                 'status' => UserStatus::Active,
             ]

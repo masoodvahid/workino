@@ -21,8 +21,10 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'name',
         'mobile',
         'password',
+        'type',
         'status',
         'note',
     ];
@@ -48,11 +50,6 @@ class User extends Authenticatable
             'password' => 'hashed',
             'status' => UserStatus::class,
         ];
-    }
-
-    public function getNameAttribute(): string
-    {
-        return $this->mobile;
     }
 
     public function userMetas(): HasMany

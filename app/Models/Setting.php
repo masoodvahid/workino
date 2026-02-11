@@ -14,11 +14,10 @@ class Setting extends Model
     /**
      * @var list<string>
      */
-    protected $fillable = [
+    protected $fillable = [        
         'key',
         'value',
-        'group',
-        'status',
+        'group'
     ];
 
     /**
@@ -27,8 +26,7 @@ class Setting extends Model
     protected function casts(): array
     {
         return [
-            'value' => 'array',
-            'status' => 'boolean',
+            'value' => 'array'
         ];
     }
 }
