@@ -5,34 +5,36 @@ namespace App\Models;
 use App\Enums\Status;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Space extends Model
+class SubSpace extends Model
 {
     use HasFactory, SoftDeletes;
 
     public const META_FIELDS = [
-        'logo' => ['group' => null, 'order' => 1],
-        'featured_image' => ['group' => 'images', 'order' => 1],
+        'feature_image' => ['group' => 'images', 'order' => 1],
         'images' => ['group' => 'images', 'order' => 2],
-        'abstract' => ['group' => 'content', 'order' => 1],
-        'content' => ['group' => 'content', 'order' => 2],
+        'working_time' => ['group' => 'content', 'order' => 1],
+        'abstract' => ['group' => 'content', 'order' => 2],
+        'content' => ['group' => 'content', 'order' => 3],
     ];
 
     public const META_KEYS = [
-        'logo',
-        'featured_image',
+        'feature_image',
         'images',
+        'working_time',
         'abstract',
         'content',
     ];
 
     protected $fillable = [
+        'space_id',
         'title',
         'slug',
-        'order',
-        'note',
+        'type',
+        'capacity',
         'status',
     ];
 
@@ -40,25 +42,23 @@ class Space extends Model
     {
         return [
             'status' => Status::class,
-            'order' => 'integer',
+            'capacity' => 'integer',
         ];
     }
 
-    public function spaceMetas(): HasMany
+    public function space(): BelongsTo
     {
-        return $this->hasMany(SpaceMeta::class, 'space_id');
+        return $this->belongsTo(Space::class, 'space_id');
     }
 
-    public function subSpaces(): HasMany
+    public function subSpaceMetas(): HasMany
     {
-        return $this->hasMany(SubSpace::class, 'space_id');
+        return $this->hasMany(SubSpaceMeta::class, 'subspace_id');
     }
 
     public function metaValue(string $key): mixed
     {
-        $value = $this->spaceMetas->firstWhere('key', $key)?->value;
-
-        return $value;
+        return $this->subSpaceMetas->firstWhere('key', $key)?->value;
     }
 
     public function setMetaValues(array $values): void
@@ -70,7 +70,7 @@ class Space extends Model
 
             $meta = self::META_FIELDS[$key];
 
-            $this->spaceMetas()->updateOrCreate(
+            $this->subSpaceMetas()->updateOrCreate(
                 ['key' => $key],
                 [
                     'value' => blank($value) ? null : $value,

@@ -7,14 +7,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class SpaceMeta extends Model
+class SubSpaceMeta extends Model
 {
     use HasFactory;
 
-    protected $table = 'space_meta';
+    protected $table = 'subspace_meta';
 
     protected $fillable = [
-        'space_id',
+        'subspace_id',
         'key',
         'value',
         'group',
@@ -31,8 +31,8 @@ class SpaceMeta extends Model
         ];
     }
 
-    public function space(): BelongsTo
+    public function subSpace(): BelongsTo
     {
-        return $this->belongsTo(Space::class, 'space_id');
+        return $this->belongsTo(SubSpace::class, 'subspace_id');
     }
 }

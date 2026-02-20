@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Space;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -16,6 +17,12 @@ class DatabaseSeeder extends Seeder
      * Seed the application's database.
      */
     public function run(): void
+    {
+        $this->seedUsers();
+        $this->seedSpaces();
+    }
+
+    private function seedUsers(): void
     {
         $user1 = User::factory()->create([
             'name' => 'مسعود وحید',
@@ -89,5 +96,24 @@ class DatabaseSeeder extends Seeder
 
             $user->setMetaValues($meta);
         }
+    }
+
+    private function seedSpaces(): void
+    {
+        Space::factory(10)->create()->each(function (Space $space) {
+            $space->setMetaValues([
+                'logo' => fake()->imageUrl(200, 200, 'business', true, 'Logo'),
+                'featured_image' => fake()->imageUrl(800, 600, 'office', true, 'Featured'),
+                'images' => [
+                    fake()->imageUrl(800, 600, 'office', true, 'Image 1'),
+                    fake()->imageUrl(800, 600, 'office', true, 'Image 2'),
+                    fake()->imageUrl(800, 600, 'office', true, 'Image 3'),
+                ],
+                'abstract' => fake('fa_IR')->realText(200),
+                'content' => collect(fake('fa_IR')->paragraphs(3))
+                    ->map(fn ($p) => "<p>$p</p>")
+                    ->implode(''),
+            ]);
+        });
     }
 }

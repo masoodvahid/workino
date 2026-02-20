@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\Spaces\Schemas;
 
 use App\Models\Space;
+use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
 
@@ -24,20 +25,32 @@ class SpaceInfolist
                     ->badge(),
                 TextEntry::make('order')
                     ->label('ترتیب'),
-                TextEntry::make('logo')
+                ImageEntry::make('logo')
                     ->label('نشان (Logo)')
-                    ->state(fn (Space $record): mixed => $record->metaValue('logo'))
-                    ->default('-')
+                    ->state(function (Space $record): array {
+                        $val = $record->metaValue('logo');
+
+                        return filled($val) ? [$val] : [];
+                    })
+                    ->disk('public')
                     ->columnSpanFull(),
-                TextEntry::make('featured_image')
+                ImageEntry::make('featured_image')
                     ->label('تصویر اصلی')
-                    ->state(fn (Space $record): mixed => $record->metaValue('featured_image'))
-                    ->default('-')
+                    ->state(function (Space $record): array {
+                        $val = $record->metaValue('featured_image');
+
+                        return filled($val) ? [$val] : [];
+                    })
+                    ->disk('public')
                     ->columnSpanFull(),
-                TextEntry::make('images')
+                ImageEntry::make('images')
                     ->label('سایر تصاویر')
-                    ->state(fn (Space $record): mixed => $record->metaValue('images'))
-                    ->formatStateUsing(fn ($state): string => is_array($state) ? implode('، ', $state) : ($state ?? '-'))
+                    ->state(function (Space $record): array {
+                        $val = $record->metaValue('images');
+
+                        return is_array($val) ? $val : [];
+                    })
+                    ->disk('public')
                     ->columnSpanFull(),
                 TextEntry::make('abstract')
                     ->label('معرفی اولیه')

@@ -17,15 +17,12 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use UnitEnum;
 
 class SpaceResource extends Resource
 {
     protected static ?string $model = Space::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
-    protected static string|UnitEnum|null $navigationGroup = 'مدیریت مراکز';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::CpuChip;
 
     protected static ?string $navigationLabel = 'مراکز';
 
