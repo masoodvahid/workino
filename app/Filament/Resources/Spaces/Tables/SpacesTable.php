@@ -31,6 +31,9 @@ class SpacesTable
                 TextColumn::make('order')
                     ->label('ترتیب')
                     ->sortable(),
+                TextColumn::make('sub_spaces_count')
+                    ->label('تعداد زیرمجموعه')
+                    ->sortable(),
                 TextColumn::make('deleted_at')
                     ->label('حذف شده در')
                     ->formatStateUsing(fn ($state): string => $state ? verta($state)->format('Y/m/d H:i') : '-')

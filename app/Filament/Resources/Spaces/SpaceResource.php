@@ -10,12 +10,14 @@ use App\Filament\Resources\Spaces\Schemas\SpaceForm;
 use App\Filament\Resources\Spaces\Schemas\SpaceInfolist;
 use App\Filament\Resources\Spaces\Tables\SpacesTable;
 use App\Models\Space;
+use App\Models\User;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class SpaceResource extends Resource
@@ -62,10 +64,118 @@ class SpaceResource extends Resource
 
     public static function getRecordRouteBindingEloquentQuery(): Builder
     {
-        return parent::getRecordRouteBindingEloquentQuery()
-            ->with('spaceMetas')
+        $query = parent::getRecordRouteBindingEloquentQuery()
+            ->with(['spaceMetas', 'subSpaces'])
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+
+        $user = auth()->user();
+
+        if ($user instanceof User && $user->isSpaceUser()) {
+            $query->whereHas('spaceUsers', fn (Builder $query): Builder => $query
+                ->where('user_id', $user->id)
+                ->where('status', 'active'));
+        }
+
+        return $query;
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery()->withCount('subSpaces');
+        $user = auth()->user();
+
+        if ($user instanceof User && $user->isSpaceUser()) {
+            $query->whereHas('spaceUsers', fn (Builder $query): Builder => $query
+                ->where('user_id', $user->id)
+                ->where('status', 'active'));
+        }
+
+        return $query;
+    }
+
+    public static function canViewAny(): bool
+    {
+        return static::currentUser()?->hasPanelPermission('spaces.view_any') ?? false;
+    }
+
+    public static function canCreate(): bool
+    {
+        return static::currentUser()?->hasPanelPermission('spaces.create') ?? false;
+    }
+
+    public static function canView(Model $record): bool
+    {
+        $user = static::currentUser();
+
+        if (! $user || ! $user->hasPanelPermission('spaces.view')) {
+            return false;
+        }
+
+        return $user->isAdmin() || $record->spaceUsers()
+            ->where('user_id', $user->id)
+            ->where('status', 'active')
+            ->exists();
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        $user = static::currentUser();
+
+        if (! $user || ! $user->hasPanelPermission('spaces.update')) {
+            return false;
+        }
+
+        return $user->isAdmin() || $record->spaceUsers()
+            ->where('user_id', $user->id)
+            ->where('status', 'active')
+            ->exists();
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        $user = static::currentUser();
+
+        if (! $user || ! $user->hasPanelPermission('spaces.delete')) {
+            return false;
+        }
+
+        return $user->isAdmin() || $record->spaceUsers()
+            ->where('user_id', $user->id)
+            ->where('status', 'active')
+            ->exists();
+    }
+
+    public static function canForceDelete(Model $record): bool
+    {
+        return static::canDelete($record);
+    }
+
+    public static function canRestore(Model $record): bool
+    {
+        return static::canDelete($record);
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return static::currentUser()?->hasPanelPermission('spaces.delete') ?? false;
+    }
+
+    public static function canForceDeleteAny(): bool
+    {
+        return static::canDeleteAny();
+    }
+
+    public static function canRestoreAny(): bool
+    {
+        return static::canDeleteAny();
+    }
+
+    private static function currentUser(): ?User
+    {
+        $user = auth()->user();
+
+        return $user instanceof User ? $user : null;
     }
 }

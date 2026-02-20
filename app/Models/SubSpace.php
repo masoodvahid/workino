@@ -13,6 +13,8 @@ class SubSpace extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $table = 'subspaces';
+
     public const META_FIELDS = [
         'feature_image' => ['group' => 'images', 'order' => 1],
         'images' => ['group' => 'images', 'order' => 2],

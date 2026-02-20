@@ -28,6 +28,10 @@ class UsersTable
                 TextColumn::make('mobile')
                     ->label('شماره همراه')
                     ->searchable(),
+                TextColumn::make('role.title')
+                    ->label('نقش دسترسی')
+                    ->badge()
+                    ->default('-'),
                 TextColumn::make('status')
                     ->label('وضعیت')
                     ->badge()

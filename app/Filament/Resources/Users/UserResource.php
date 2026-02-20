@@ -16,6 +16,7 @@ use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UserResource extends Resource
@@ -69,5 +70,55 @@ class UserResource extends Resource
             ->withoutGlobalScopes([
                 SoftDeletingScope::class,
             ]);
+    }
+
+    public static function canViewAny(): bool
+    {
+        return auth()->user() instanceof User && auth()->user()->isAdmin();
+    }
+
+    public static function canCreate(): bool
+    {
+        return auth()->user() instanceof User && auth()->user()->isAdmin();
+    }
+
+    public static function canView(Model $record): bool
+    {
+        return auth()->user() instanceof User && auth()->user()->isAdmin();
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        return auth()->user() instanceof User && auth()->user()->isAdmin();
+    }
+
+    public static function canDelete(Model $record): bool
+    {
+        return auth()->user() instanceof User && auth()->user()->isAdmin();
+    }
+
+    public static function canDeleteAny(): bool
+    {
+        return auth()->user() instanceof User && auth()->user()->isAdmin();
+    }
+
+    public static function canForceDelete(Model $record): bool
+    {
+        return auth()->user() instanceof User && auth()->user()->isAdmin();
+    }
+
+    public static function canForceDeleteAny(): bool
+    {
+        return auth()->user() instanceof User && auth()->user()->isAdmin();
+    }
+
+    public static function canRestore(Model $record): bool
+    {
+        return auth()->user() instanceof User && auth()->user()->isAdmin();
+    }
+
+    public static function canRestoreAny(): bool
+    {
+        return auth()->user() instanceof User && auth()->user()->isAdmin();
     }
 }

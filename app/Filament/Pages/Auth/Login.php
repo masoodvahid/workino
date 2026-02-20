@@ -163,6 +163,10 @@ class Login extends BaseLogin
                 $this->throwFailureValidationException();
             }
 
+            if (! $user->canAccessPanel(Filament::getCurrentPanel())) {
+                $this->throwFailureValidationException();
+            }
+
             Filament::auth()->login($user, $data['remember'] ?? false);
             Cache::forget("otp_login_{$mobile}");
 

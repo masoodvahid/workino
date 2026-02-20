@@ -3,12 +3,15 @@
 namespace App\Filament\Resources\Spaces\Schemas;
 
 use App\Enums\Status;
+use App\Enums\UserRoleKey;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
+use Illuminate\Database\Eloquent\Builder;
 
 class SpaceForm
 {
@@ -60,6 +63,27 @@ class SpaceForm
                     ->columnSpanFull(),
                 RichEditor::make('content')
                     ->label('متن معرفی کامل')
+                    ->columnSpanFull(),
+                Repeater::make('spaceUsers')
+                    ->label('اعضای مرکز')
+                    ->relationship('spaceUsers')
+                    ->defaultItems(0)
+                    ->schema([
+                        Select::make('user_id')
+                            ->label('کاربر')
+                            ->relationship('user', 'name', fn (Builder $query): Builder => $query
+                                ->whereHas('role', fn (Builder $query): Builder => $query->where('key', UserRoleKey::SpaceUser->value)))
+                            ->getOptionLabelFromRecordUsing(fn ($record): string => filled($record->name) ? "{$record->name} ({$record->mobile})" : $record->mobile)
+                            ->searchable(['name', 'mobile'])
+                            ->preload()
+                            ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                            ->required(),
+                        Select::make('status')
+                            ->label('وضعیت')
+                            ->options(Status::class)
+                            ->default('active')
+                            ->required(),
+                    ])
                     ->columnSpanFull(),
             ]);
     }

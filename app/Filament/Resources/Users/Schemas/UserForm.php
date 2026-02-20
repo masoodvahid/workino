@@ -3,8 +3,10 @@
 namespace App\Filament\Resources\Users\Schemas;
 
 use App\Enums\City;
+use App\Enums\UserRoleKey;
 use App\Enums\UserEducation;
 use App\Enums\UserStatus;
+use App\Models\Role;
 use App\Support\NumberNormalizer;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -31,6 +33,15 @@ class UserForm
                         'company' => 'حقوقی',
                     ])
                     ->live()
+                    ->required(),
+                Select::make('role_id')
+                    ->label('نقش دسترسی')
+                    ->relationship('role', 'title')
+                    ->searchable()
+                    ->preload()
+                    ->default(fn (): ?int => Role::query()->where('key', UserRoleKey::User->value)->value('id'))
+                    ->disabled(fn (string $operation): bool => $operation === 'edit')
+                    ->dehydrated(fn (string $operation): bool => $operation !== 'edit')
                     ->required(),
                 TextInput::make('name')
                     ->label(fn (Get $get): string => $get('type') === 'company' ? 'نام شرکت' : 'نام و نام خانوادگی')

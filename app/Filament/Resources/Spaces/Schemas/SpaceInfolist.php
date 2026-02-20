@@ -25,6 +25,21 @@ class SpaceInfolist
                     ->badge(),
                 TextEntry::make('order')
                     ->label('ترتیب'),
+                TextEntry::make('subspaces_count')
+                    ->label('تعداد زیرمجموعه ها')
+                    ->state(fn (Space $record): int => $record->subSpaces()->count()),
+                TextEntry::make('subspaces_list')
+                    ->label('زیرمجموعه ها')
+                    ->state(function (Space $record): string {
+                        if ($record->subSpaces->isEmpty()) {
+                            return '-';
+                        }
+
+                        return $record->subSpaces
+                            ->map(fn ($subSpace): string => "{$subSpace->title} ({$subSpace->type})")
+                            ->implode(' | ');
+                    })
+                    ->columnSpanFull(),
                 ImageEntry::make('logo')
                     ->label('نشان (Logo)')
                     ->state(function (Space $record): array {

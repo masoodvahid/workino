@@ -33,6 +33,10 @@ class UserInfolist
 
                 TextEntry::make('mobile')
                     ->label('شماره همراه'),
+                TextEntry::make('role.title')
+                    ->label('نقش دسترسی')
+                    ->badge()
+                    ->default('-'),
 
                 TextEntry::make('email')
                     ->label('ایمیل')
