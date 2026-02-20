@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();            
-            $table->string('key', 128);
+            $table->string('key', 100);
             $table->json('value'); 
-            $table->string('group', 128)->nullable();  // ex: user_profile, sms, ...
+            $table->string('group', 100)->nullable();  // ex: user_profile, sms, ...
             $table->softDeletes();
             $table->timestamps();
 
