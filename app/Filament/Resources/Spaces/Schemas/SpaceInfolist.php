@@ -22,7 +22,9 @@ class SpaceInfolist
                     ->label('وضعیت')
                     ->badge(),               
                 TextEntry::make('slug')
-                    ->label('url'),
+                    ->label('url')
+                    ->url(fn (Space $record): string => route('spaces.show', $record->slug))
+                    ->openUrlInNewTab(),
                 TextEntry::make('order')
                     ->label('ترتیب نمایش'),
                 TextEntry::make('subspaces_count')
