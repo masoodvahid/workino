@@ -4,6 +4,8 @@ namespace App\Providers\Filament;
 
 use App\Filament\Pages\Auth\Login;
 use App\Filament\Pages\Dashboard;
+use App\Filament\Widgets\AdminOverviewStats;
+use App\Filament\Widgets\AdminTrendsChart;
 use Filament\FontProviders\LocalFontProvider;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -12,8 +14,6 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
-use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -30,8 +30,12 @@ class ModiriatPanelProvider extends PanelProvider
             ->id('modiriat')
             ->path('modiriat')
             ->login(Login::class)
+            ->brandName('کارینو')
+            ->brandLogo(null)
+            ->darkModeBrandLogo(null)
             ->font('Shabnam', '/fonts/shabnam/shabnam.css', LocalFontProvider::class)
             ->profile()
+            ->viteTheme('resources/css/filament/modiriat/theme.css')
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -42,8 +46,8 @@ class ModiriatPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\Filament\Widgets')
             ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+                AdminOverviewStats::class,
+                AdminTrendsChart::class,
             ])
             ->middleware([
                 EncryptCookies::class,

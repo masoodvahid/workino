@@ -44,7 +44,7 @@ class ViewSpace extends ViewRecord
 
     public function getTitle(): string
     {
-        return 'مشاهده مرکز';
+        return (string) ($this->record->title ?? 'مرکز');
     }
 
     private function getSubSpaceFormSchema(): array

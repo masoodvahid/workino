@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{ $title ?? 'Workino - رزرو فضای کار اشتراکی' }}</title>
-    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased bg-gray-50 text-gray-800">
@@ -18,7 +19,7 @@
                     <a href="/" class="text-2xl font-bold text-blue-600">ورکینو</a>
                     <nav class="hidden md:flex gap-6 text-sm font-medium text-gray-600">
                         <a href="{{ route('home') }}" class="hover:text-blue-600 transition {{ request()->routeIs('home') ? 'text-blue-600 font-bold' : '' }}">خانه</a>
-                        <a href="{{ route('coworks.index') }}" class="hover:text-blue-600 transition {{ request()->routeIs('coworks.*') ? 'text-blue-600 font-bold' : '' }}">فضاهای کار</a>
+                        <a href="{{ route('spaces.index') }}" class="hover:text-blue-600 transition {{ request()->routeIs('spaces.*') ? 'text-blue-600 font-bold' : '' }}">فضاهای کار</a>
                         <a href="{{ route('about') }}" class="hover:text-blue-600 transition {{ request()->routeIs('about') ? 'text-blue-600 font-bold' : '' }}">درباره ما</a>
                         <a href="{{ route('contact') }}" class="hover:text-blue-600 transition {{ request()->routeIs('contact') ? 'text-blue-600 font-bold' : '' }}">تماس با ما</a>
                         <a href="{{ route('support.index') }}" class="hover:text-blue-600 transition {{ request()->routeIs('support.*') ? 'text-blue-600 font-bold' : '' }}">پشتیبانی</a>
@@ -28,9 +29,11 @@
                 <!-- Auth Buttons -->
                 <div class="flex items-center gap-3">
                     @auth
-                        <a href="/modiriat" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium">
-                            پنل کاربری
-                        </a>
+                        @if (auth()->user()?->isAdmin() || auth()->user()?->isSpaceUser())
+                            <a href="/modiriat" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition text-sm font-medium">
+                                پنل مدیریت
+                            </a>
+                        @endif
                         <a href="{{ route('profile.index') }}" class="text-gray-600 hover:text-blue-600 font-medium text-sm">
                             پروفایل من
                         </a>

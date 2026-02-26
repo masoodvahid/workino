@@ -6,6 +6,7 @@ use App\Filament\Resources\Spaces\Pages\CreateSpace;
 use App\Filament\Resources\Spaces\Pages\EditSpace;
 use App\Filament\Resources\Spaces\Pages\ListSpaces;
 use App\Filament\Resources\Spaces\Pages\ViewSpace;
+use App\Filament\Resources\Spaces\RelationManagers\SubSpacesRelationManager;
 use App\Filament\Resources\Spaces\Schemas\SpaceForm;
 use App\Filament\Resources\Spaces\Schemas\SpaceInfolist;
 use App\Filament\Resources\Spaces\Tables\SpacesTable;
@@ -49,7 +50,9 @@ class SpaceResource extends Resource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            SubSpacesRelationManager::class,
+        ];
     }
 
     public static function getPages(): array
@@ -83,7 +86,9 @@ class SpaceResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        $query = parent::getEloquentQuery()->withCount('subSpaces');
+        $query = parent::getEloquentQuery()
+            ->with('spaceMetas')
+            ->withCount(['subSpaces', 'users']);
         $user = auth()->user();
 
         if ($user instanceof User && $user->isSpaceUser()) {

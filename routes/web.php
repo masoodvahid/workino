@@ -7,12 +7,13 @@ use App\Http\Controllers\SupportController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('index');
-})->name('home');
+Route::get('/', [CoworkController::class, 'home'])->name('home');
 
 // Cowork Spaces
-Route::get('/coworks', [CoworkController::class, 'index'])->name('coworks.index');
+Route::get('/spaces', [CoworkController::class, 'index'])->name('spaces.index');
+Route::get('/spaces/live-search', [CoworkController::class, 'liveSearch'])->name('spaces.live-search');
+Route::get('/spaces/{spaceSlug}/{subSpaceSlug}', [CoworkController::class, 'showSubSpace'])->name('spaces.subspaces.show');
+Route::get('/spaces/{slug}', [CoworkController::class, 'show'])->name('spaces.show');
 
 // Static Pages
 Route::get('/about', [PageController::class, 'about'])->name('about');

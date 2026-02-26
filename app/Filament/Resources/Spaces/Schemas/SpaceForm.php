@@ -2,8 +2,10 @@
 
 namespace App\Filament\Resources\Spaces\Schemas;
 
+use App\Enums\City;
 use App\Enums\Status;
 use App\Enums\UserRoleKey;
+use App\Models\Space;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
@@ -34,6 +36,11 @@ class SpaceForm
                     ->minValue(1)
                     ->maxValue(99)
                     ->default(1),
+                Select::make('city')
+                    ->label('شهر')
+                    ->options(City::class)
+                    ->searchable()
+                    ->required(),
                 Select::make('status')
                     ->label('وضعیت')
                     ->options(Status::class)
@@ -42,27 +49,105 @@ class SpaceForm
                 Textarea::make('note')
                     ->label('یادداشت')
                     ->columnSpanFull(),
+                TextInput::make('location_neshan')
+                    ->label('لوکیشن در نشان')
+                    ->url()
+                    ->placeholder('https://nshn.ir/...'),
                 FileUpload::make('logo')
                     ->label('نشان (Logo)')
                     ->image()
-                    ->directory('spaces')
+                    ->acceptedFileTypes([
+                        'image/svg+xml',
+                        'image/jpeg',
+                        'image/png',
+                        'image/gif',
+                        'image/avif',
+                    ])
+                    ->maxSize(1024)
+                    ->automaticallyResizeImagesMode('contain')
+                    ->automaticallyResizeImagesToWidth('1920')
+                    ->automaticallyResizeImagesToHeight('1080')
+                    ->automaticallyUpscaleImagesWhenResizing(false)
+                    ->disk('public')
+                    ->directory(fn (?Space $record): string => filled($record?->id) ? "spaces/{$record->id}" : 'spaces/temp')
                     ->visibility('public'),
                 FileUpload::make('featured_image')
                     ->label('تصویر اصلی')
                     ->image()
-                    ->directory('spaces')
+                    ->acceptedFileTypes([
+                        'image/svg+xml',
+                        'image/jpeg',
+                        'image/png',
+                        'image/gif',
+                        'image/avif',
+                    ])
+                    ->maxSize(1024)
+                    ->automaticallyResizeImagesMode('contain')
+                    ->automaticallyResizeImagesToWidth('1920')
+                    ->automaticallyResizeImagesToHeight('1080')
+                    ->automaticallyUpscaleImagesWhenResizing(false)
+                    ->disk('public')
+                    ->directory(fn (?Space $record): string => filled($record?->id) ? "spaces/{$record->id}" : 'spaces/temp')
                     ->visibility('public'),
                 FileUpload::make('images')
                     ->label('سایر تصاویر')
                     ->image()
                     ->multiple()
-                    ->directory('spaces')
+                    ->acceptedFileTypes([
+                        'image/svg+xml',
+                        'image/jpeg',
+                        'image/png',
+                        'image/gif',
+                        'image/avif',
+                    ])
+                    ->maxSize(1024)
+                    ->automaticallyResizeImagesMode('contain')
+                    ->automaticallyResizeImagesToWidth('1920')
+                    ->automaticallyResizeImagesToHeight('1080')
+                    ->automaticallyUpscaleImagesWhenResizing(false)
+                    ->disk('public')
+                    ->directory(fn (?Space $record): string => filled($record?->id) ? "spaces/{$record->id}" : 'spaces/temp')
                     ->visibility('public'),
+                Repeater::make('social')
+                    ->label('شبکه‌های اجتماعی')
+                    ->defaultItems(0)
+                    ->columns(3)
+                    ->schema([
+                        TextInput::make('title')
+                            ->label('عنوان')
+                            ->required(),
+                        TextInput::make('url')
+                            ->label('آدرس')
+                            ->url()
+                            ->required(),
+                        Select::make('icon')
+                            ->label('آیکن')
+                            ->options(self::socialIconOptions())
+                            ->searchable()
+                            ->native(false)
+                            ->placeholder('انتخاب آیکن'),
+                    ])
+                    ->columnSpanFull(),
+                Repeater::make('phones')
+                    ->label('شماره تماس')
+                    ->defaultItems(0)
+                    ->columns(2)
+                    ->schema([
+                        TextInput::make('title')
+                            ->label('عنوان')
+                            ->required(),
+                        TextInput::make('phone_number')
+                            ->label('شماره تماس')
+                            ->tel()
+                            ->required(),
+                    ])
+                    ->columnSpanFull(),
                 TextInput::make('abstract')
                     ->label('معرفی اولیه')
                     ->columnSpanFull(),
                 RichEditor::make('content')
                     ->label('متن معرفی کامل')
+                    ->extraInputAttributes(['style' => 'min-height: 16rem;'])
                     ->columnSpanFull(),
                 Repeater::make('spaceUsers')
                     ->label('اعضای مرکز')
@@ -86,5 +171,21 @@ class SpaceForm
                     ])
                     ->columnSpanFull(),
             ]);
+    }
+
+    private static function socialIconOptions(): array
+    {
+        return [
+            'bi bi-telegram' => 'Telegram',
+            'bi bi-instagram' => 'Instagram',
+            'bi bi-whatsapp' => 'WhatsApp',
+            'bi bi-linkedin' => 'LinkedIn',
+            'bi bi-twitter-x' => 'X (Twitter)',
+            'bi bi-youtube' => 'YouTube',
+            'bi bi-github' => 'GitHub',
+            'bi bi-facebook' => 'Facebook',
+            'bi bi-send-fill' => 'Eitaa',
+            'bi bi-globe2' => 'Website',
+        ];
     }
 }

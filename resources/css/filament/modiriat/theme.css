@@ -1,0 +1,162 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../app/Filament/**/*';
+@source '../../../../resources/views/filament/**/*';
+
+@theme {
+    --font-sans: 'Shabnam', ui-sans-serif, system-ui, sans-serif;
+}
+
+:root {
+    --admin-surface: #f8fafc;
+    --admin-card: #ffffff;
+    --admin-border: #e2e8f0;
+    --admin-text: #0f172a;
+    --admin-muted: #475569;
+    --admin-hover: #eef6ff;
+    --admin-accent-soft: #e0f2fe;
+    --admin-accent-text: #0c4a6e;
+}
+
+.dark {
+    --admin-surface: #020617;
+    --admin-card: #0f172a;
+    --admin-border: #1e293b;
+    --admin-text: #e2e8f0;
+    --admin-muted: #94a3b8;
+    --admin-hover: #17253a;
+    --admin-accent-soft: #1d3557;
+    --admin-accent-text: #bae6fd;
+}
+
+.fi-body {
+    background:
+        radial-gradient(circle at 0 0, rgb(14 165 233 / 0.14), transparent 30%),
+        radial-gradient(circle at 100% 0, rgb(99 102 241 / 0.14), transparent 35%),
+        var(--admin-surface);
+    color: var(--admin-text);
+}
+
+.fi-sidebar {
+    @apply border-e backdrop-blur-xl;
+    border-color: var(--admin-border);
+    background-color: color-mix(in srgb, var(--admin-card) 88%, transparent);
+}
+
+.fi-topbar {
+    @apply border-b backdrop-blur-xl;
+    border-color: var(--admin-border);
+    background-color: color-mix(in srgb, var(--admin-card) 82%, transparent);
+}
+
+.fi-main {
+    @apply p-4 md:p-6;
+}
+
+.fi-section,
+.fi-ta-ctn,
+.fi-wi-stats-overview-stat,
+.fi-modal-window,
+.fi-dropdown-panel,
+.fi-in-entry-wrp,
+.fi-input-wrp {
+    @apply rounded-2xl border shadow-sm;
+    border-color: var(--admin-border);
+    background-color: var(--admin-card);
+}
+
+.fi-section,
+.fi-ta-ctn,
+.fi-wi-stats-overview-stat {
+    @apply shadow-[0_12px_30px_-18px_rgb(15_23_42_/_0.35)];
+}
+
+.fi-sidebar-item-btn,
+.fi-topbar-item-btn {
+    @apply rounded-xl transition-all duration-200;
+}
+
+.fi-sidebar-item.fi-active .fi-sidebar-item-btn,
+.fi-topbar-item.fi-active .fi-topbar-item-btn {
+    @apply ring-1;
+    background-color: var(--admin-accent-soft);
+    color: var(--admin-accent-text);
+    --tw-ring-color: color-mix(in srgb, var(--admin-accent-text) 28%, transparent);
+}
+
+.fi-btn {
+    @apply rounded-xl border backdrop-blur-md transition-all duration-200;
+    border-color: color-mix(in srgb, var(--admin-border) 80%, transparent);
+    background-color: color-mix(in srgb, var(--admin-card) 62%, transparent);
+    box-shadow:
+        0 10px 24px -18px rgb(15 23 42 / 0.55),
+        inset 0 1px 0 rgb(255 255 255 / 0.35);
+}
+
+.fi-btn.fi-color-primary {
+    color: #f8fafc;
+    border-color: color-mix(in srgb, #7dd3fc 45%, transparent);
+    background:
+        linear-gradient(135deg, rgb(14 165 233 / 0.42), rgb(99 102 241 / 0.42)),
+        color-mix(in srgb, var(--admin-card) 35%, transparent);
+    box-shadow:
+        0 14px 28px -18px rgb(14 165 233 / 0.7),
+        inset 0 1px 0 rgb(255 255 255 / 0.38);
+}
+
+.fi-btn:hover {
+    background-color: color-mix(in srgb, var(--admin-card) 72%, transparent);
+    border-color: color-mix(in srgb, var(--admin-accent-text) 22%, var(--admin-border));
+}
+
+.fi-btn.fi-color-primary:hover {
+    border-color: color-mix(in srgb, #38bdf8 58%, transparent);
+    background:
+        linear-gradient(135deg, rgb(14 165 233 / 0.52), rgb(99 102 241 / 0.52)),
+        color-mix(in srgb, var(--admin-card) 28%, transparent);
+}
+
+.dark .fi-btn {
+    box-shadow:
+        0 14px 28px -20px rgb(2 6 23 / 0.95),
+        inset 0 1px 0 rgb(255 255 255 / 0.08);
+}
+
+.fi-input-wrp {
+    @apply transition-shadow duration-200;
+}
+
+.fi-input-wrp:focus-within {
+    @apply ring-2 ring-sky-300;
+}
+
+.fi-ta-table thead {
+    background-color: color-mix(in srgb, var(--admin-card) 72%, var(--admin-border));
+}
+
+.fi-ta-row {
+    @apply transition-colors duration-150;
+}
+
+.fi-ta-row:hover {
+    background-color: var(--admin-hover);
+}
+
+.fi-main,
+.fi-modal-window,
+.fi-dropdown-panel,
+.fi-section-content,
+.fi-ta-table {
+    color: var(--admin-text);
+}
+
+.fi-section-header-description,
+.fi-input-wrp-label,
+.fi-ta-header-cell,
+.fi-pagination-overview {
+    color: var(--admin-muted);
+}
+
+.fi-section.fi-section-not-contained.fi-section-has-header {
+    padding: 25px;
+}

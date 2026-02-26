@@ -10,3 +10,10 @@
     --font-sans: 'Shabnam', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+@layer base {
+    html,
+    body {
+        font-family: 'Shabnam', ui-sans-serif, system-ui, sans-serif;
+    }
+}

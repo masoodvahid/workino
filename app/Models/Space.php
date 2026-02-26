@@ -14,17 +14,25 @@ class Space extends Model
     use HasFactory, SoftDeletes;
 
     public const META_FIELDS = [
+        'city' => ['group' => null, 'order' => 1],
         'logo' => ['group' => null, 'order' => 1],
+        'location_neshan' => ['group' => 'location', 'order' => 1],
         'featured_image' => ['group' => 'images', 'order' => 1],
         'images' => ['group' => 'images', 'order' => 2],
+        'social' => ['group' => 'social', 'order' => 1],
+        'phones' => ['group' => 'phones', 'order' => 1],
         'abstract' => ['group' => 'content', 'order' => 1],
         'content' => ['group' => 'content', 'order' => 2],
     ];
 
     public const META_KEYS = [
+        'city',
         'logo',
+        'location_neshan',
         'featured_image',
         'images',
+        'social',
+        'phones',
         'abstract',
         'content',
     ];
