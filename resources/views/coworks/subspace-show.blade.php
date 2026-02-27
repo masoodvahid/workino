@@ -25,6 +25,13 @@
         ];
 
         $workingTime = $subSpace->metaValue('working_time');
+        $prices = $subSpace->prices
+            ->filter(fn ($price) => $price->status?->value === 'active')
+            ->sortBy([
+                fn ($price) => $price->priority ?? PHP_INT_MAX,
+                fn ($price) => $price->base_price ?? PHP_INT_MAX,
+            ])
+            ->values();
 
         $dayLabels = [
             'saturday' => 'شنبه',
@@ -95,6 +102,61 @@
                     </div>
                 </div>
             </div>
+
+            @if ($prices->isNotEmpty())
+                <div class="bg-white border border-gray-100 rounded-2xl p-6">
+                    <div class="flex items-center justify-between gap-4 mb-4">
+                        <h2 class="text-lg font-bold text-gray-900">تعرفه ها</h2>
+                        <span class="text-xs text-gray-500">قیمت ها به ریال نمایش داده می شوند</span>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                        @foreach ($prices as $price)
+                            @php
+                                $priceValue = $price->special_price ?: $price->base_price;
+                                $priceUnitLabel = $price->unit?->getLabel() ?? $price->unit?->value ?? '-';
+                            @endphp
+
+                            <div class="rounded-2xl border border-gray-100 bg-gray-50 p-5 space-y-4">
+                                <div class="flex items-start justify-between gap-3">
+                                    <div>
+                                        <h3 class="font-bold text-gray-900">{{ $price->title }}</h3>
+                                        <div class="text-sm text-gray-500 mt-1">{{ $priceUnitLabel }}</div>
+                                    </div>
+                                    @if ($price->special_price)
+                                        <span class="text-xs bg-emerald-100 text-emerald-700 rounded-full px-3 py-1">ویژه</span>
+                                    @endif
+                                </div>
+
+                                <div>
+                                    <div class="text-2xl font-extrabold text-gray-900">{{ number_format($priceValue) }}</div>
+                                    <div class="text-xs text-gray-500 mt-1">برای هر {{ $priceUnitLabel }}</div>
+                                </div>
+
+                                @if ($price->special_price)
+                                    <div class="text-sm text-gray-500">
+                                        <span class="line-through">{{ number_format($price->base_price) }}</span>
+                                        <span class="mx-1">/</span>
+                                        <span class="text-emerald-700 font-medium">{{ number_format($price->special_price) }}</span>
+                                    </div>
+                                @endif
+
+                                @if (filled($price->description))
+                                    <p class="text-sm leading-7 text-gray-600">{{ $price->description }}</p>
+                                @endif
+
+                                @if ($price->start || $price->end)
+                                    <div class="text-xs text-gray-500 border-t border-gray-200 pt-3">
+                                        اعتبار:
+                                        {{ $price->start ? verta($price->start)->format('Y/m/d') : 'اکنون' }}
+                                        تا
+                                        {{ $price->end ? verta($price->end)->format('Y/m/d') : 'نامحدود' }}
+                                    </div>
+                                @endif
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
 
             @if (is_array($workingTime) && count($workingTime))
                 <div class="bg-white border border-gray-100 rounded-2xl p-6">

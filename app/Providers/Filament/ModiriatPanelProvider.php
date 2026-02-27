@@ -35,6 +35,9 @@ class ModiriatPanelProvider extends PanelProvider
             ->darkModeBrandLogo(null)
             ->font('Shabnam', '/fonts/shabnam/shabnam.css', LocalFontProvider::class)
             ->profile()
+            ->sidebarCollapsibleOnDesktop()
+            ->collapsedSidebarWidth('5rem')
+            ->collapsibleNavigationGroups()
             ->viteTheme('resources/css/filament/modiriat/theme.css')
             ->colors([
                 'primary' => Color::Amber,

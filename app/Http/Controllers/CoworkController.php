@@ -81,7 +81,7 @@ class CoworkController extends Controller
                 'spaceMetas',
                 'subSpaces' => fn (Builder $query): Builder => $query
                     ->where('status', Status::Active)
-                    ->with('subSpaceMetas'),
+                    ->with(['subSpaceMetas', 'prices']),
             ])
             ->first();
 
@@ -153,7 +153,7 @@ class CoworkController extends Controller
             ->where('space_id', $space->id)
             ->where('status', Status::Active)
             ->where('slug', $subSpaceSlug)
-            ->with('subSpaceMetas')
+            ->with(['subSpaceMetas', 'prices'])
             ->first();
 
         if (! $subSpace) {

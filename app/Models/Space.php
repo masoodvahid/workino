@@ -15,8 +15,11 @@ class Space extends Model
 
     public const META_FIELDS = [
         'city' => ['group' => null, 'order' => 1],
+        'address' => ['group' => 'location', 'order' => 1],
+        'postal_code' => ['group' => 'location', 'order' => 2],
         'logo' => ['group' => null, 'order' => 1],
-        'location_neshan' => ['group' => 'location', 'order' => 1],
+        'location_neshan' => ['group' => 'location', 'order' => 3],
+        'off_dates' => ['group' => 'calendar', 'order' => 1],
         'featured_image' => ['group' => 'images', 'order' => 1],
         'images' => ['group' => 'images', 'order' => 2],
         'social' => ['group' => 'social', 'order' => 1],
@@ -27,8 +30,11 @@ class Space extends Model
 
     public const META_KEYS = [
         'city',
+        'address',
+        'postal_code',
         'logo',
         'location_neshan',
+        'off_dates',
         'featured_image',
         'images',
         'social',
@@ -61,6 +67,11 @@ class Space extends Model
     public function subSpaces(): HasMany
     {
         return $this->hasMany(SubSpace::class, 'space_id');
+    }
+
+    public function discounts(): HasMany
+    {
+        return $this->hasMany(Discount::class, 'space_id');
     }
 
     public function spaceUsers(): HasMany

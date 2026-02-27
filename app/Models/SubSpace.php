@@ -18,6 +18,7 @@ class SubSpace extends Model
     public const META_FIELDS = [
         'feature_image' => ['group' => 'images', 'order' => 1],
         'images' => ['group' => 'images', 'order' => 2],
+        'off_dates' => ['group' => 'calendar', 'order' => 1],
         'working_time' => ['group' => 'content', 'order' => 1],
         'abstract' => ['group' => 'content', 'order' => 2],
         'content' => ['group' => 'content', 'order' => 3],
@@ -26,6 +27,7 @@ class SubSpace extends Model
     public const META_KEYS = [
         'feature_image',
         'images',
+        'off_dates',
         'working_time',
         'abstract',
         'content',
@@ -56,6 +58,11 @@ class SubSpace extends Model
     public function subSpaceMetas(): HasMany
     {
         return $this->hasMany(SubSpaceMeta::class, 'subspace_id');
+    }
+
+    public function prices(): HasMany
+    {
+        return $this->hasMany(Price::class, 'subspace_id');
     }
 
     public function metaValue(string $key): mixed

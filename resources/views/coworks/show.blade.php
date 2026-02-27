@@ -164,6 +164,12 @@
                                 : ((\Illuminate\Support\Str::startsWith((string) $subFeatureImage, ['http://', 'https://', '/']))
                                     ? (string) $subFeatureImage
                                     : \Illuminate\Support\Facades\Storage::url((string) $subFeatureImage));
+                            $startingPrice = $subSpace->prices
+                                ->filter(fn ($price) => $price->status?->value === 'active')
+                                ->sortBy(fn ($price) => $price->special_price ?: $price->base_price)
+                                ->first();
+                            $startingPriceValue = $startingPrice ? ($startingPrice->special_price ?: $startingPrice->base_price) : null;
+                            $startingPriceUnit = $startingPrice?->unit?->getLabel();
                         @endphp
 
                         <a href="{{ route('spaces.subspaces.show', ['spaceSlug' => $space->slug, 'subSpaceSlug' => $subSpace->slug]) }}" class="block rounded-xl border border-gray-100 overflow-hidden bg-gray-50 hover:shadow-md transition">
@@ -180,6 +186,17 @@
                                 </p>
                                 <div class="mt-3 text-xs text-gray-600">
                                     ظرفیت: {{ $subSpace->capacity ?: 'نامشخص' }}
+                                </div>
+                                <div class="mt-3">
+                                    @if ($startingPriceValue)
+                                        <div class="text-xs text-gray-500">شروع قیمت</div>
+                                        <div class="text-base font-bold text-gray-900 mt-1">
+                                            {{ number_format($startingPriceValue) }}
+                                            <span class="text-xs font-medium text-gray-500">/ {{ $startingPriceUnit }}</span>
+                                        </div>
+                                    @else
+                                        <div class="text-sm text-gray-400">قیمت ثبت نشده</div>
+                                    @endif
                                 </div>
                                 <div class="mt-3 text-sm text-blue-600 font-medium">مشاهده جزئیات</div>
                             </div>

@@ -8,45 +8,43 @@
 }
 
 :root {
-    --admin-surface: #f8fafc;
+    --admin-surface: #f1f5f9;
     --admin-card: #ffffff;
-    --admin-border: #e2e8f0;
+    --admin-border: #dbe3ee;
     --admin-text: #0f172a;
     --admin-muted: #475569;
-    --admin-hover: #eef6ff;
-    --admin-accent-soft: #e0f2fe;
-    --admin-accent-text: #0c4a6e;
+    --admin-hover: #edf2f7;
+    --admin-accent-soft: #dbeafe;
+    --admin-accent-text: #1d4ed8;
+    --admin-radius: 8px;
 }
 
 .dark {
-    --admin-surface: #020617;
-    --admin-card: #0f172a;
-    --admin-border: #1e293b;
-    --admin-text: #e2e8f0;
-    --admin-muted: #94a3b8;
-    --admin-hover: #17253a;
-    --admin-accent-soft: #1d3557;
-    --admin-accent-text: #bae6fd;
+    --admin-surface: #0b1220;
+    --admin-card: #111827;
+    --admin-border: #243244;
+    --admin-text: #e5e7eb;
+    --admin-muted: #9ca3af;
+    --admin-hover: #182334;
+    --admin-accent-soft: #1e3a8a;
+    --admin-accent-text: #dbeafe;
 }
 
 .fi-body {
-    background:
-        radial-gradient(circle at 0 0, rgb(14 165 233 / 0.14), transparent 30%),
-        radial-gradient(circle at 100% 0, rgb(99 102 241 / 0.14), transparent 35%),
-        var(--admin-surface);
+    background: var(--admin-surface);
     color: var(--admin-text);
 }
 
 .fi-sidebar {
-    @apply border-e backdrop-blur-xl;
+    @apply border-e;
     border-color: var(--admin-border);
-    background-color: color-mix(in srgb, var(--admin-card) 88%, transparent);
+    background-color: var(--admin-card);
 }
 
 .fi-topbar {
-    @apply border-b backdrop-blur-xl;
+    @apply border-b;
     border-color: var(--admin-border);
-    background-color: color-mix(in srgb, var(--admin-card) 82%, transparent);
+    background-color: var(--admin-card);
 }
 
 .fi-main {
@@ -60,70 +58,71 @@
 .fi-dropdown-panel,
 .fi-in-entry-wrp,
 .fi-input-wrp {
-    @apply rounded-2xl border shadow-sm;
+    @apply border;
+    border-radius: var(--admin-radius);
     border-color: var(--admin-border);
     background-color: var(--admin-card);
+    box-shadow: none;
 }
 
 .fi-section,
 .fi-ta-ctn,
 .fi-wi-stats-overview-stat {
-    @apply shadow-[0_12px_30px_-18px_rgb(15_23_42_/_0.35)];
+    box-shadow: none;
 }
 
 .fi-sidebar-item-btn,
 .fi-topbar-item-btn {
-    @apply rounded-xl transition-all duration-200;
+    @apply transition-colors duration-150;
+    border-radius: 6px;
 }
 
 .fi-sidebar-item.fi-active .fi-sidebar-item-btn,
 .fi-topbar-item.fi-active .fi-topbar-item-btn {
-    @apply ring-1;
     background-color: var(--admin-accent-soft);
     color: var(--admin-accent-text);
-    --tw-ring-color: color-mix(in srgb, var(--admin-accent-text) 28%, transparent);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--admin-accent-text) 30%, transparent);
 }
 
 .fi-btn {
-    @apply rounded-xl border backdrop-blur-md transition-all duration-200;
-    border-color: color-mix(in srgb, var(--admin-border) 80%, transparent);
-    background-color: color-mix(in srgb, var(--admin-card) 62%, transparent);
-    box-shadow:
-        0 10px 24px -18px rgb(15 23 42 / 0.55),
-        inset 0 1px 0 rgb(255 255 255 / 0.35);
+    @apply border transition-colors duration-150;
+    border-radius: 6px;
+    border-color: var(--admin-border);
+    background-color: var(--admin-card);
+    box-shadow: none;
 }
 
 .fi-btn.fi-color-primary {
-    color: #f8fafc;
-    border-color: color-mix(in srgb, #7dd3fc 45%, transparent);
-    background:
-        linear-gradient(135deg, rgb(14 165 233 / 0.42), rgb(99 102 241 / 0.42)),
-        color-mix(in srgb, var(--admin-card) 35%, transparent);
-    box-shadow:
-        0 14px 28px -18px rgb(14 165 233 / 0.7),
-        inset 0 1px 0 rgb(255 255 255 / 0.38);
+    color: #ffffff;
+    border-color: #1d4ed8;
+    background: #2563eb;
+    box-shadow: none;
+}
+
+.fi-btn.fi-color-danger {
+    color: #ffffff;
+    border-color: #b91c1c;
+    background: #dc2626;
+    box-shadow: none;
 }
 
 .fi-btn:hover {
-    background-color: color-mix(in srgb, var(--admin-card) 72%, transparent);
-    border-color: color-mix(in srgb, var(--admin-accent-text) 22%, var(--admin-border));
+    background-color: var(--admin-hover);
+    border-color: color-mix(in srgb, var(--admin-accent-text) 20%, var(--admin-border));
 }
 
 .fi-btn.fi-color-primary:hover {
-    border-color: color-mix(in srgb, #38bdf8 58%, transparent);
-    background:
-        linear-gradient(135deg, rgb(14 165 233 / 0.52), rgb(99 102 241 / 0.52)),
-        color-mix(in srgb, var(--admin-card) 28%, transparent);
+    border-color: #1e40af;
+    background: #1d4ed8;
 }
 
-.dark .fi-btn {
-    box-shadow:
-        0 14px 28px -20px rgb(2 6 23 / 0.95),
-        inset 0 1px 0 rgb(255 255 255 / 0.08);
+.fi-btn.fi-color-danger:hover {
+    border-color: #991b1b;
+    background: #b91c1c;
 }
 
 .fi-input-wrp {
-    @apply transition-shadow duration-200;
+    @apply transition-colors duration-150;
 }
 
 .fi-input-wrp:focus-within {
@@ -131,7 +130,7 @@
 }
 
 .fi-ta-table thead {
-    background-color: color-mix(in srgb, var(--admin-card) 72%, var(--admin-border));
+    background-color: color-mix(in srgb, var(--admin-card) 88%, var(--admin-border));
 }
 
 .fi-ta-row {
@@ -158,5 +157,5 @@
 }
 
 .fi-section.fi-section-not-contained.fi-section-has-header {
-    padding: 25px;
+    padding: 16px;
 }
