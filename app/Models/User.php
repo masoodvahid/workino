@@ -103,6 +103,16 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Payment::class, 'user_id');
     }
 
+    public function likes(): HasMany
+    {
+        return $this->hasMany(Like::class, 'user_id');
+    }
+
+    public function comments(): HasMany
+    {
+        return $this->hasMany(Comment::class, 'user_id');
+    }
+
     public function roleKey(): string
     {
         return $this->role?->key?->value ?? UserRoleKey::User->value;
