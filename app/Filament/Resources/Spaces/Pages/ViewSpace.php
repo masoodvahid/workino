@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Spaces\Pages;
 
 use App\Filament\Resources\Spaces\SpaceResource;
 use App\Filament\Resources\Spaces\Widgets\LatestSpaceBookings;
+use App\Filament\Resources\Spaces\Widgets\LatestSpaceComments;
 use App\Filament\Resources\Spaces\Widgets\LatestSpacePayments;
 use App\Filament\Resources\SubSpaces\SubSpaceResource;
 use Filament\Actions\Action;
@@ -54,5 +55,19 @@ class ViewSpace extends ViewRecord
                 ]),
                 $this->getRelationManagersContentComponent(),
             ]);
+    }
+
+    protected function getFooterWidgets(): array
+    {
+        return [
+            LatestSpaceComments::make([
+                'spaceId' => $this->record->getKey(),
+            ]),
+        ];
+    }
+
+    public function getFooterWidgetsColumns(): int | array
+    {
+        return 1;
     }
 }

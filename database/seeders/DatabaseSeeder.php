@@ -2,8 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Enums\CommentStatus;
+use App\Enums\InteractableType;
 use App\Enums\UserRoleKey;
 use App\Models\Booking;
+use App\Models\Comment;
 use App\Models\Payment;
 use App\Models\Price;
 use App\Models\Role;
@@ -161,8 +164,24 @@ class DatabaseSeeder extends Seeder
                     ->implode(''),
             ]);
 
+            $this->seedCommentsForSpace($space);
             $this->seedSubSpacesForSpace($space);
         });
+    }
+
+    private function seedCommentsForSpace(Space $space): void
+    {
+        foreach (range(1, 3) as $index) {
+            Comment::query()->create([
+                'user_id' => User::query()->inRandomOrder()->value('id'),
+                'type' => InteractableType::Space,
+                'parent_id' => $space->id,
+                'content' => fake('fa_IR')->realText(fake()->numberBetween(80, 160)),
+                'rating' => fake()->numberBetween(3, 5),
+                'reply_to' => null,
+                'status' => CommentStatus::Approve,
+            ]);
+        }
     }
 
     private function seedSubSpacesForSpace(Space $space): void

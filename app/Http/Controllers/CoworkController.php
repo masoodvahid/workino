@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\CommentStatus;
+use App\Enums\InteractableType;
 use App\Enums\Status;
+use App\Models\Comment;
+use App\Models\Like;
 use App\Models\Space;
 use App\Models\SubSpace;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -89,7 +94,18 @@ class CoworkController extends Controller
             throw new ModelNotFoundException();
         }
 
-        return view('coworks.show', compact('space'));
+        $comments = Comment::query()
+            ->where('type', InteractableType::Space)
+            ->where('parent_id', $space->id)
+            ->where('status', CommentStatus::Approve)
+            ->with('user')
+            ->latest()
+            ->get();
+
+        $likesCount = $this->likesCount(InteractableType::Space, $space->id);
+        $isLiked = $this->isLiked(InteractableType::Space, $space->id);
+
+        return view('coworks.show', compact('space', 'comments', 'likesCount', 'isLiked'));
     }
 
     public function liveSearch(Request $request): JsonResponse
@@ -160,7 +176,106 @@ class CoworkController extends Controller
             throw new ModelNotFoundException();
         }
 
-        return view('coworks.subspace-show', compact('space', 'subSpace'));
+        $comments = Comment::query()
+            ->where('type', InteractableType::Subspace)
+            ->where('parent_id', $subSpace->id)
+            ->where('status', CommentStatus::Approve)
+            ->with('user')
+            ->latest()
+            ->get();
+
+        $likesCount = $this->likesCount(InteractableType::Subspace, $subSpace->id);
+        $isLiked = $this->isLiked(InteractableType::Subspace, $subSpace->id);
+
+        return view('coworks.subspace-show', compact('space', 'subSpace', 'comments', 'likesCount', 'isLiked'));
+    }
+
+    public function storeSpaceComment(Request $request, string $slug): RedirectResponse
+    {
+        $space = Space::query()
+            ->where('status', Status::Active)
+            ->where('slug', $slug)
+            ->first();
+
+        if (! $space) {
+            throw new ModelNotFoundException();
+        }
+
+        $this->storeComment($request, InteractableType::Space, $space->id);
+
+        return redirect()
+            ->route('spaces.show', $space->slug)
+            ->with('comment_status', 'نظر شما ثبت شد و پس از بررسی نمایش داده می‌شود.');
+    }
+
+    public function storeSubSpaceComment(Request $request, string $spaceSlug, string $subSpaceSlug): RedirectResponse
+    {
+        $space = Space::query()
+            ->where('status', Status::Active)
+            ->where('slug', $spaceSlug)
+            ->first();
+
+        if (! $space) {
+            throw new ModelNotFoundException();
+        }
+
+        $subSpace = SubSpace::query()
+            ->where('space_id', $space->id)
+            ->where('status', Status::Active)
+            ->where('slug', $subSpaceSlug)
+            ->first();
+
+        if (! $subSpace) {
+            throw new ModelNotFoundException();
+        }
+
+        $this->storeComment($request, InteractableType::Subspace, $subSpace->id);
+
+        return redirect()
+            ->route('spaces.subspaces.show', ['spaceSlug' => $space->slug, 'subSpaceSlug' => $subSpace->slug])
+            ->with('comment_status', 'نظر شما ثبت شد و پس از بررسی نمایش داده می‌شود.');
+    }
+
+    public function toggleSpaceLike(Request $request, string $slug): RedirectResponse
+    {
+        $space = Space::query()
+            ->where('status', Status::Active)
+            ->where('slug', $slug)
+            ->first();
+
+        if (! $space) {
+            throw new ModelNotFoundException();
+        }
+
+        $this->toggleLike($request, InteractableType::Space, $space->id);
+
+        return redirect()->route('spaces.show', $space->slug);
+    }
+
+    public function toggleSubSpaceLike(Request $request, string $spaceSlug, string $subSpaceSlug): RedirectResponse
+    {
+        $space = Space::query()
+            ->where('status', Status::Active)
+            ->where('slug', $spaceSlug)
+            ->first();
+
+        if (! $space) {
+            throw new ModelNotFoundException();
+        }
+
+        $subSpace = SubSpace::query()
+            ->where('space_id', $space->id)
+            ->where('status', Status::Active)
+            ->where('slug', $subSpaceSlug)
+            ->first();
+
+        if (! $subSpace) {
+            throw new ModelNotFoundException();
+        }
+
+        $this->toggleLike($request, InteractableType::Subspace, $subSpace->id);
+
+        return redirect()->route('spaces.subspaces.show', ['spaceSlug' => $space->slug, 'subSpaceSlug' => $subSpace->slug]);
     }
 
     private function resolveSpaceImage(Space $space): string
@@ -190,5 +305,65 @@ class CoworkController extends Controller
             'conference_room' => 'اتاق کنفرانس',
             'coffeeshop' => 'کافه',
         ];
+    }
+
+    private function storeComment(Request $request, InteractableType $type, int $parentId): void
+    {
+        $data = $request->validate([
+            'content' => ['nullable', 'string'],
+            'rating' => ['required', 'integer', 'min:1', 'max:5'],
+        ]);
+
+        Comment::query()->create([
+            'user_id' => $request->user()->id,
+            'type' => $type,
+            'parent_id' => $parentId,
+            'content' => $data['content'] ?? null,
+            'rating' => (int) $data['rating'],
+            'status' => CommentStatus::Pending,
+        ]);
+    }
+
+    private function toggleLike(Request $request, InteractableType $type, int $parentId): void
+    {
+        $like = Like::query()
+            ->where('user_id', $request->user()->id)
+            ->where('type', $type)
+            ->where('parent_id', $parentId)
+            ->first();
+
+        if ($like) {
+            $like->delete();
+
+            return;
+        }
+
+        Like::query()->create([
+            'user_id' => $request->user()->id,
+            'type' => $type,
+            'parent_id' => $parentId,
+            'created_at' => now(),
+        ]);
+    }
+
+    private function likesCount(InteractableType $type, int $parentId): int
+    {
+        return Like::query()
+            ->where('type', $type)
+            ->where('parent_id', $parentId)
+            ->count();
+    }
+
+    private function isLiked(InteractableType $type, int $parentId): bool
+    {
+        if (! auth()->check()) {
+            return false;
+        }
+
+        return Like::query()
+            ->where('user_id', auth()->id())
+            ->where('type', $type)
+            ->where('parent_id', $parentId)
+            ->exists();
     }
 }
