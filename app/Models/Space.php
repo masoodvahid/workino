@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Space extends Model
@@ -69,9 +70,19 @@ class Space extends Model
         return $this->hasMany(SubSpace::class, 'space_id');
     }
 
+    public function bookings(): HasManyThrough
+    {
+        return $this->hasManyThrough(Booking::class, SubSpace::class, 'space_id', 'subspace_id', 'id', 'id');
+    }
+
     public function discounts(): HasMany
     {
         return $this->hasMany(Discount::class, 'space_id');
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class, 'space_id');
     }
 
     public function spaceUsers(): HasMany

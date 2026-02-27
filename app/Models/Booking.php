@@ -2,44 +2,43 @@
 
 namespace App\Models;
 
-use App\Enums\BookingStatus;
-use App\Enums\BookingUnit;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Price extends Model
+class Booking extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
+        'user_id',
         'subspace_id',
-        'title',
-        'description',
-        'unit',
-        'unit_rules',
-        'base_price',
-        'special_price',
+        'price_id',
+        'quantity',
+        'unit_price',
+        'total_price',
         'start',
         'end',
-        'priority',
         'status',
+        'note',
     ];
 
     protected function casts(): array
     {
         return [
-            'unit' => BookingUnit::class,
-            'unit_rules' => 'array',
-            'base_price' => 'integer',
-            'special_price' => 'integer',
+            'quantity' => 'integer',
+            'unit_price' => 'integer',
+            'total_price' => 'integer',
             'start' => 'date',
             'end' => 'date',
-            'priority' => 'integer',
-            'status' => BookingStatus::class,
         ];
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     public function subSpace(): BelongsTo
@@ -47,8 +46,13 @@ class Price extends Model
         return $this->belongsTo(SubSpace::class, 'subspace_id');
     }
 
-    public function bookings(): HasMany
+    public function price(): BelongsTo
     {
-        return $this->hasMany(Booking::class, 'price_id');
+        return $this->belongsTo(Price::class, 'price_id');
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class, 'booking_id');
     }
 }

@@ -65,6 +65,11 @@ class SubSpace extends Model
         return $this->hasMany(Price::class, 'subspace_id');
     }
 
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(Booking::class, 'subspace_id');
+    }
+
     public function metaValue(string $key): mixed
     {
         return $this->subSpaceMetas->firstWhere('key', $key)?->value;

@@ -93,6 +93,16 @@ class User extends Authenticatable implements FilamentUser
             ->withTimestamps();
     }
 
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(Booking::class, 'user_id');
+    }
+
+    public function payments(): HasMany
+    {
+        return $this->hasMany(Payment::class, 'user_id');
+    }
+
     public function roleKey(): string
     {
         return $this->role?->key?->value ?? UserRoleKey::User->value;

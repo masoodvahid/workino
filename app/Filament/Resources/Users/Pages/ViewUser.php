@@ -3,8 +3,11 @@
 namespace App\Filament\Resources\Users\Pages;
 
 use App\Filament\Resources\Users\UserResource;
+use App\Filament\Resources\Users\Widgets\UserBookingsTable;
+use App\Filament\Resources\Users\Widgets\UserPaymentsTable;
 use Filament\Actions\EditAction;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Schemas\Schema;
 
 class ViewUser extends ViewRecord
 {
@@ -20,5 +23,23 @@ class ViewUser extends ViewRecord
     public function getTitle(): string
     {
         return 'مشاهده کاربر';
+    }
+
+    public function content(Schema $schema): Schema
+    {
+        return $schema
+            ->components([
+                $this->hasInfolist()
+                    ? $this->getInfolistContentComponent()
+                    : $this->getFormContentComponent(),
+                ...$this->getWidgetsSchemaComponents([
+                    UserBookingsTable::make([
+                        'userId' => $this->record->getKey(),
+                    ]),
+                    UserPaymentsTable::make([
+                        'userId' => $this->record->getKey(),
+                    ]),
+                ]),
+            ]);
     }
 }

@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 use App\Enums\UserRoleKey;
+use App\Models\Booking;
+use App\Models\Payment;
+use App\Models\Price;
 use App\Models\Role;
 use App\Models\Space;
 use App\Models\SubSpace;
@@ -143,7 +146,7 @@ class DatabaseSeeder extends Seeder
 
     private function seedSpaces(): void
     {
-        Space::factory(10)->create()->each(function (Space $space) {
+        Space::factory(5)->create()->each(function (Space $space) {
             $space->setMetaValues([
                 'logo' => fake()->imageUrl(200, 200, 'business', true, 'Logo'),
                 'featured_image' => fake()->imageUrl(800, 600, 'office', true, 'Featured'),
@@ -165,11 +168,20 @@ class DatabaseSeeder extends Seeder
     private function seedSubSpacesForSpace(Space $space): void
     {
         $types = ['seat', 'room', 'meeting_room', 'conference_room', 'coffeeshop'];
-        $count = random_int(2, 6);
+        $typeLabels = [
+            'seat' => 'صندلی',
+            'room' => 'اتاق',
+            'meeting_room' => 'اتاق جلسات',
+            'conference_room' => 'اتاق کنفرانس',
+            'coffeeshop' => 'کافی شاپ',
+        ];
+        $flowerNames = ['رز', 'نرگس', 'یاس', 'لاله', 'شقایق', 'ارکیده', 'بنفشه', 'مریم', 'آفتابگردان', 'نیلوفر'];
+        $count = 4;
 
         foreach (range(1, $count) as $index) {
-            $type = fake()->randomElement($types);
-            $title = fake('fa_IR')->words(2, true).' '.$index;
+            $type = $index === 1 ? 'seat' : fake()->randomElement($types);
+            $flowerName = fake()->randomElement($flowerNames);
+            $title = ($typeLabels[$type] ?? $type) . ' ' . $flowerName;
 
             $subSpace = SubSpace::query()->create([
                 'space_id' => $space->id,
@@ -192,6 +204,31 @@ class DatabaseSeeder extends Seeder
                     ->map(fn ($paragraph) => "<p>{$paragraph}</p>")
                     ->implode(''),
             ]);
+
+            $price = Price::factory()->create([
+                'subspace_id' => $subSpace->id,
+            ]);
+
+            $userIds = User::query()
+                ->inRandomOrder()
+                ->limit(4)
+                ->pluck('id');
+
+            foreach ($userIds as $userId) {
+                $booking = Booking::factory()->create([
+                    'user_id' => $userId,
+                    'subspace_id' => $subSpace->id,
+                    'price_id' => $price->id,
+                    'unit_price' => $price->special_price ?: $price->base_price,
+                ]);
+
+                Payment::factory()->create([
+                    'user_id' => $booking->user_id,
+                    'space_id' => $space->id,
+                    'subspace_id' => $subSpace->id,
+                    'booking_id' => $booking->id,
+                ]);
+            }
         }
     }
 
