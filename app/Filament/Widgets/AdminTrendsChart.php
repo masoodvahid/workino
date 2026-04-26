@@ -14,9 +14,7 @@ class AdminTrendsChart extends ChartWidget
 
     protected ?string $description = 'کاربران، فضاها و تعداد بازدید';
 
-    protected string|int|array $columnSpan = ['md' => 2, 'xl' => 1];
-
-    protected static ?int $sort = 1;
+    protected string|int|array $columnSpan = 'full';
 
     protected function getType(): string
     {
