@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 
 class AdminTrendsChart extends ChartWidget
 {
+    protected static ?int $sort = 10;
+
     protected ?string $heading = 'روند ۷ روز اخیر';
 
     protected ?string $description = 'کاربران، فضاها و تعداد بازدید';

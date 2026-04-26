@@ -31,7 +31,7 @@ class DiscountResource extends Resource
 
     protected static ?string $pluralModelLabel = 'تخفیف‌ها';
 
-    protected static string|UnitEnum|null $navigationGroup = 'رزرو';
+    protected static string|UnitEnum|null $navigationGroup = 'مالی';
 
     public static function form(Schema $schema): Schema
     {

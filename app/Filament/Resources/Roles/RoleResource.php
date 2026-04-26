@@ -29,7 +29,7 @@ class RoleResource extends Resource
 
     protected static ?string $pluralModelLabel = 'نقش ها';
 
-    protected static string|UnitEnum|null $navigationGroup = 'مدیریت دسترسی';
+    protected static string|UnitEnum|null $navigationGroup = 'تنظیمات';
 
     public static function form(Schema $schema): Schema
     {

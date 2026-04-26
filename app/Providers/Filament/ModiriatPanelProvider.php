@@ -14,6 +14,7 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -36,12 +37,16 @@ class ModiriatPanelProvider extends PanelProvider
             ->darkModeBrandLogo(asset('images/karino-logo.png'))
             ->font('Shabnam', '/fonts/shabnam/shabnam.css', LocalFontProvider::class)
             ->profile()
-            ->sidebarCollapsibleOnDesktop()
-            ->collapsedSidebarWidth('5rem')
-            ->collapsibleNavigationGroups()
+            ->topNavigation()
+            ->maxContentWidth('full')
+            ->renderHook(
+                PanelsRenderHook::USER_MENU_BEFORE,
+                fn (): string => view('filament.topbar.clock')->render(),
+            )
             ->viteTheme('resources/css/filament/modiriat/theme.css')
             ->colors([
-                'primary' => Color::Amber,
+                'primary' => Color::Slate,
+                'danger' => Color::Red,
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')

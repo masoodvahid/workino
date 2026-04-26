@@ -7,75 +7,147 @@
     --font-sans: 'Shabnam', ui-sans-serif, system-ui, sans-serif;
 }
 
+/* =========================================================================
+   Light theme — Acme/Mercury-style fintech minimal flat design
+   ========================================================================= */
 :root {
-    --admin-surface: #eef2f6;
-    --admin-surface-strong: #e2e8f0;
-    --admin-card: rgba(255, 255, 255, 0.9);
-    --admin-card-solid: #ffffff;
-    --admin-border: #d7dee7;
+    --admin-page: #eef0f2;
+    --admin-sidebar: #f6f7f8;
+    --admin-card: #ffffff;
     --admin-text: #0f172a;
-    --admin-muted: #526277;
-    --admin-hover: #e9eef5;
-    --admin-accent-soft: #dbe7f4;
-    --admin-accent-text: #334155;
-    --admin-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
-    --admin-shadow-soft: 0 1px 2px rgba(15, 23, 42, 0.04);
-    --admin-radius: 18px;
-    --admin-radius-sm: 12px;
+    --admin-muted: #6b7280;
+    --admin-border: rgba(15, 23, 42, 0.06);
+    --admin-border-strong: rgba(15, 23, 42, 0.10);
+    --admin-hover: rgba(15, 23, 42, 0.04);
+    --admin-accent: #ef4444;          /* coral / red highlight */
+    --admin-accent-soft: rgba(239, 68, 68, 0.10);
+    --admin-primary: #0f172a;         /* dark/black primary buttons */
+    --admin-primary-hover: #1e293b;
+    --admin-shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+    --admin-shadow-md: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+    --admin-shadow-lg: 0 4px 16px -4px rgba(15, 23, 42, 0.08);
+    --admin-radius: 20px;
+    --admin-radius-md: 14px;
+    --admin-radius-sm: 10px;
+    --admin-radius-pill: 9999px;
 }
 
 .dark {
-    --admin-surface: #0b1220;
-    --admin-surface-strong: #0f172a;
+    --admin-page: #0b1220;
+    --admin-sidebar: #0f172a;
     --admin-card: #111827;
-    --admin-card-solid: #111827;
-    --admin-border: #243244;
     --admin-text: #e5e7eb;
-    --admin-muted: #9ca3af;
-    --admin-hover: #182334;
-    --admin-accent-soft: #1e3a8a;
-    --admin-accent-text: #dbeafe;
-    --admin-shadow: none;
-    --admin-shadow-soft: none;
+    --admin-muted: #94a3b8;
+    --admin-border: rgba(255, 255, 255, 0.06);
+    --admin-border-strong: rgba(255, 255, 255, 0.10);
+    --admin-hover: rgba(255, 255, 255, 0.04);
+    --admin-accent: #f87171;
+    --admin-accent-soft: rgba(248, 113, 113, 0.12);
+    --admin-primary: #f8fafc;
+    --admin-primary-hover: #e2e8f0;
+    --admin-shadow-sm: none;
+    --admin-shadow-md: none;
+    --admin-shadow-lg: 0 4px 16px -4px rgba(0, 0, 0, 0.5);
 }
 
+/* =========================================================================
+   Page shell
+   ========================================================================= */
 .fi-body {
     min-height: 100vh;
-    background: var(--admin-surface);
+    background: var(--admin-page);
     color: var(--admin-text);
-    background-image:
-        radial-gradient(circle at top right, rgba(255, 255, 255, 0.8), transparent 28%),
-        linear-gradient(180deg, #f8fafc 0%, var(--admin-surface) 22%, var(--admin-surface) 100%);
-}
-
-.fi-sidebar {
-    @apply border-e backdrop-blur-xl;
-    border-color: color-mix(in srgb, var(--admin-border) 80%, white);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.92));
-    box-shadow: var(--admin-shadow-soft);
-}
-
-.fi-topbar {
-    @apply border-b backdrop-blur-xl;
-    border-color: color-mix(in srgb, var(--admin-border) 78%, white);
-    background: rgba(255, 255, 255, 0.82);
 }
 
 .fi-main {
-    @apply p-4 md:p-6;
+    @apply px-4 md:px-6;
+    padding-top: 0.75rem;
+    padding-bottom: 1.5rem;
 }
 
-.fi-section,
+/* Hide empty page header gap when there's no heading */
+.fi-page-header:empty,
+.fi-header:empty {
+    display: none;
+}
+
+.fi-page > .fi-page-header,
+.fi-page > .fi-header {
+    margin-bottom: 0;
+}
+
+/* =========================================================================
+   Sidebar
+   ========================================================================= */
+.fi-sidebar {
+    @apply border-e;
+    background: var(--admin-sidebar);
+    border-color: var(--admin-border);
+    box-shadow: none;
+}
+
+.fi-sidebar-item-btn,
+.fi-topbar-item-btn {
+    @apply transition-all duration-150;
+    border-radius: var(--admin-radius-md);
+    color: var(--admin-muted);
+    font-weight: 500;
+}
+
+.fi-sidebar-item-btn:hover,
+.fi-topbar-item-btn:hover {
+    background-color: var(--admin-hover);
+    color: var(--admin-text);
+}
+
+.fi-sidebar-item.fi-active .fi-sidebar-item-btn,
+.fi-topbar-item.fi-active .fi-topbar-item-btn {
+    background-color: var(--admin-card);
+    color: var(--admin-text);
+    box-shadow: var(--admin-shadow-md);
+    font-weight: 600;
+}
+
+.dark .fi-sidebar-item.fi-active .fi-sidebar-item-btn,
+.dark .fi-topbar-item.fi-active .fi-topbar-item-btn {
+    background-color: rgba(255, 255, 255, 0.06);
+}
+
+/* =========================================================================
+   Topbar
+   ========================================================================= */
+.fi-topbar {
+    @apply border-b;
+    background: var(--admin-page);
+    border-color: var(--admin-border);
+    box-shadow: none;
+}
+
+
+/* =========================================================================
+   Cards / sections / widgets / modals
+   ========================================================================= */
+.fi-section:not(.fi-section-not-contained),
 .fi-ta-ctn,
 .fi-modal-window,
 .fi-dropdown-panel,
 .fi-in-entry-wrp,
-.fi-input-wrp {
-    @apply border backdrop-blur-sm;
+.fi-input-wrp,
+.fi-wi-stats-overview-stat,
+.fi-wi-chart {
+    @apply border;
     border-radius: var(--admin-radius);
-    border-color: color-mix(in srgb, var(--admin-border) 88%, white);
+    border-color: var(--admin-border);
     background-color: var(--admin-card);
-    box-shadow: var(--admin-shadow);
+    box-shadow: var(--admin-shadow-sm);
+}
+
+/* Stats overview Section is rendered as not-contained — strip any box */
+.fi-section.fi-section-not-contained {
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    padding: 0;
 }
 
 .fi-section,
@@ -84,122 +156,149 @@
     overflow: hidden;
 }
 
-/* ===== Glassmorphism: dashboard widgets ===== */
-.fi-wi-stats-overview-stat,
-.fi-wi-chart,
-.fi-wi .fi-section {
-    @apply border;
-    border-radius: var(--admin-radius);
-    border-color: rgba(255, 255, 255, 0.55);
-    background-color: rgba(255, 255, 255, 0.45);
-    backdrop-filter: saturate(180%) blur(18px);
-    -webkit-backdrop-filter: saturate(180%) blur(18px);
+
+/* Stat cards: glossy finish */
+.fi-wi-stats-overview-stat {
+    position: relative;
+    overflow: hidden;
+    background:
+        linear-gradient(160deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.65) 45%, rgba(241, 245, 249, 0.55) 100%),
+        var(--admin-card);
     box-shadow:
-        0 10px 30px -12px rgba(15, 23, 42, 0.12),
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.55);
-    transition: transform 200ms ease, box-shadow 200ms ease, background-color 200ms ease;
+        var(--admin-shadow-md),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.85);
+    transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+/* Gloss highlight sweep across the top */
+.fi-wi-stats-overview-stat::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 55%;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 100%);
+    pointer-events: none;
+    border-top-left-radius: var(--admin-radius);
+    border-top-right-radius: var(--admin-radius);
 }
 
 .fi-wi-stats-overview-stat:hover {
     transform: translateY(-2px);
-    background-color: rgba(255, 255, 255, 0.65);
     box-shadow:
-        0 16px 40px -14px rgba(15, 23, 42, 0.20),
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.65);
+        var(--admin-shadow-lg),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.95);
 }
 
-.dark .fi-wi-stats-overview-stat,
-.dark .fi-wi-chart,
-.dark .fi-wi .fi-section {
-    border-color: rgba(255, 255, 255, 0.08);
-    background-color: rgba(17, 24, 39, 0.55);
+.dark .fi-wi-stats-overview-stat {
+    background:
+        linear-gradient(160deg, rgba(30, 41, 59, 0.95) 0%, rgba(17, 24, 39, 0.85) 45%, rgba(15, 23, 42, 0.95) 100%),
+        var(--admin-card);
     box-shadow:
-        0 10px 30px -12px rgba(0, 0, 0, 0.55),
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+        0 4px 16px -4px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.06);
 }
 
-.dark .fi-wi-stats-overview-stat:hover {
-    background-color: rgba(30, 41, 59, 0.70);
+.dark .fi-wi-stats-overview-stat::before {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0) 100%);
 }
 
-.fi-sidebar-item-btn,
-.fi-topbar-item-btn {
-    @apply transition-colors duration-150;
-    border-radius: var(--admin-radius-sm);
+.fi-wi-stats-overview-stat-value {
+    font-size: 1.875rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--admin-text);
 }
 
-.fi-sidebar-item.fi-active .fi-sidebar-item-btn,
-.fi-topbar-item.fi-active .fi-topbar-item-btn {
-    background-color: var(--admin-accent-soft);
-    color: var(--admin-accent-text);
-    box-shadow:
-        inset 0 0 0 1px color-mix(in srgb, var(--admin-accent-text) 12%, transparent),
-        0 6px 14px rgba(148, 163, 184, 0.18);
+.fi-wi-stats-overview-stat-label {
+    color: var(--admin-muted);
+    font-weight: 500;
 }
 
-.fi-sidebar-item-btn:hover,
-.fi-topbar-item-btn:hover {
-    background-color: rgba(255, 255, 255, 0.74);
-}
-
+/* =========================================================================
+   Buttons — pill style, dark primary, white default
+   ========================================================================= */
 .fi-btn {
-    @apply border transition-colors duration-150;
-    border-radius: var(--admin-radius-sm);
-    border-color: color-mix(in srgb, var(--admin-border) 84%, white);
-    background-color: var(--admin-card-solid);
-    box-shadow: var(--admin-shadow-soft);
-}
-
-.fi-btn.fi-color-primary {
-    color: #ffffff;
-    border-color: #475569;
-    background: linear-gradient(180deg, #64748b 0%, #475569 100%);
-    box-shadow: 0 10px 20px rgba(71, 85, 105, 0.22);
-}
-
-.fi-btn.fi-color-danger {
-    color: #ffffff;
-    border-color: #b91c1c;
-    background: #dc2626;
-    box-shadow: none;
+    @apply border transition-all duration-150;
+    border-radius: var(--admin-radius-pill);
+    border-color: var(--admin-border-strong);
+    background-color: var(--admin-card);
+    color: var(--admin-text);
+    font-weight: 500;
+    box-shadow: var(--admin-shadow-sm);
 }
 
 .fi-btn:hover {
     background-color: var(--admin-hover);
-    border-color: color-mix(in srgb, var(--admin-accent-text) 14%, var(--admin-border));
+    border-color: var(--admin-border-strong);
+}
+
+.fi-btn.fi-color-primary {
+    color: #ffffff;
+    border-color: var(--admin-primary);
+    background: var(--admin-primary);
+    box-shadow: var(--admin-shadow-md);
+}
+
+.dark .fi-btn.fi-color-primary {
+    color: #0f172a;
 }
 
 .fi-btn.fi-color-primary:hover {
-    border-color: #334155;
-    background: linear-gradient(180deg, #475569 0%, #334155 100%);
+    background: var(--admin-primary-hover);
+    border-color: var(--admin-primary-hover);
+}
+
+.fi-btn.fi-color-danger {
+    color: #ffffff;
+    border-color: var(--admin-accent);
+    background: var(--admin-accent);
+    box-shadow: var(--admin-shadow-sm);
 }
 
 .fi-btn.fi-color-danger:hover {
-    border-color: #991b1b;
-    background: #b91c1c;
+    background: #dc2626;
+    border-color: #dc2626;
 }
 
+/* =========================================================================
+   Inputs
+   ========================================================================= */
 .fi-input-wrp {
     @apply transition-colors duration-150;
+    border-radius: var(--admin-radius-md);
 }
 
 .fi-input-wrp:focus-within {
-    @apply ring-2 ring-slate-300;
-    border-color: #94a3b8;
+    @apply ring-2;
+    --tw-ring-color: rgba(15, 23, 42, 0.10);
+    border-color: var(--admin-border-strong);
 }
 
+/* =========================================================================
+   Tables
+   ========================================================================= */
 .fi-ta-table thead {
-    background-color: color-mix(in srgb, var(--admin-card-solid) 84%, var(--admin-surface-strong));
+    background-color: transparent;
+}
+
+.fi-ta-header-cell {
+    color: var(--admin-muted);
+    font-weight: 500;
+    font-size: 0.85rem;
 }
 
 .fi-ta-row {
     @apply transition-colors duration-150;
+    border-color: var(--admin-border) !important;
 }
 
 .fi-ta-row:hover {
     background-color: var(--admin-hover);
 }
 
+/* =========================================================================
+   Typography helpers
+   ========================================================================= */
 .fi-main,
 .fi-modal-window,
 .fi-dropdown-panel,
@@ -210,24 +309,12 @@
 
 .fi-section-header-description,
 .fi-input-wrp-label,
-.fi-ta-header-cell,
 .fi-pagination-overview {
     color: var(--admin-muted);
 }
 
-.fi-section.fi-section-not-contained.fi-section-has-header {
-    padding: 20px;
-}
-
 .fi-header-heading {
     letter-spacing: -0.02em;
-}
-
-/* Dashboard title styling */
-.fi-dashboard-page .fi-header-heading {
-    font-size: 2rem;
-    font-weight: 800;
-    letter-spacing: 0.15em;
 }
 
 .fi-page-subheading,
@@ -235,25 +322,11 @@
     color: var(--admin-text);
 }
 
-.fi-wi-stats-overview-stat {
-    position: relative;
-}
-
-.fi-wi-stats-overview-stat::after {
-    content: '';
-    position: absolute;
-    inset-inline: 18px;
-    top: 0;
-    height: 2px;
-    border-radius: 999px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85), transparent);
-    opacity: 0.9;
-}
-
-.fi-ta-ctn,
-.fi-section,
-.fi-wi-stats-overview-stat {
-    border-radius: var(--admin-radius);
+/* Dashboard title (WORKINO) */
+.fi-dashboard-page .fi-header-heading {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: 0.15em;
 }
 
 .fi-fo-field-wrp,
@@ -261,28 +334,59 @@
     gap: 0.5rem;
 }
 
+/* =========================================================================
+   Topbar inline clock (next to user menu)
+   ========================================================================= */
+.topbar-clock {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: var(--admin-radius-pill);
+    background: var(--admin-card);
+    border: 1px solid var(--admin-border);
+    color: var(--admin-text);
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1;
+    margin-inline-end: 0.5rem;
+    box-shadow: var(--admin-shadow-sm);
+    font-variant-numeric: tabular-nums;
+}
+
+.topbar-clock__time {
+    font-weight: 700;
+}
+
+.topbar-clock__sep {
+    opacity: 0.4;
+}
+
+.topbar-clock__date {
+    color: var(--admin-muted);
+    font-weight: 500;
+}
+
+@media (max-width: 640px) {
+    .topbar-clock__date,
+    .topbar-clock__sep {
+        display: none;
+    }
+}
+
+/* =========================================================================
+   Custom widgets — clock (legacy, dashboard widget)
+   ========================================================================= */
 .admin-clock-widget {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 1.5rem;
     padding: 1.5rem 1.75rem;
-    border: 1px solid rgba(255, 255, 255, 0.55);
+    border: 1px solid var(--admin-border);
     border-radius: var(--admin-radius);
-    background: rgba(255, 255, 255, 0.45);
-    backdrop-filter: saturate(180%) blur(18px);
-    -webkit-backdrop-filter: saturate(180%) blur(18px);
-    box-shadow:
-        0 10px 30px -12px rgba(15, 23, 42, 0.12),
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.55);
-}
-
-.dark .admin-clock-widget {
-    border-color: rgba(255, 255, 255, 0.08);
-    background: rgba(17, 24, 39, 0.55);
-    box-shadow:
-        0 10px 30px -12px rgba(0, 0, 0, 0.55),
-        inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
+    background: var(--admin-card);
+    box-shadow: var(--admin-shadow-sm);
 }
 
 .admin-clock-widget__meta {
@@ -293,7 +397,7 @@
 
 .admin-clock-widget__eyebrow {
     font-size: 0.8rem;
-    font-weight: 700;
+    font-weight: 600;
     color: var(--admin-muted);
 }
 
